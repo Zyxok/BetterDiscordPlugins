@@ -31,26 +31,35 @@ class GuildCounter {
 	}
 	
 	onLibLoaded(){
+        console.log(this.getName(), "Loading.");
 
 		NeatoLib.Updates.check(this);
-
-		(this.guildsScroller = document.getElementsByClassName(NeatoLib.getClass("unreadMentionsBar", "scroller"))[0]).addEventListener("DOMNodeInserted", this.count = () => {
+        
+        this.count = () => {
 
 			let existing = document.getElementById("gc-counter"), count = Object.keys(NeatoLib.Modules.get("getGuilds").getGuilds()).length;
 	
 			if(existing) existing.innerText = count + " guilds";
-			else this.guildsScroller.getElementsByClassName(NeatoLib.getClass("guildSeparator"))[0].parentElement.insertAdjacentElement("beforebegin", NeatoLib.DOM.createElement({ id : "gc-counter", className : NeatoLib.getClass("friendsOnline") + " " + NeatoLib.getClass(["badgeIcon", "guildSeparator", "guildsError"], "listItem"), innerText : count + " guilds" }));
+			
 
-		});
-
+		}
+        
 		this.count();
 
-		NeatoLib.Events.onPluginLoaded(this);
+        //NeatoLib.showToast(`[${this.getName()}]: Plugin loaded.`, "success");
+        console.log(this.getName(), "loaded.");
 
+        this.ready = true;
+
+        if (this.forceLoadTimeout) {
+            clearTimeout(this.forceLoadTimeout);
+            this.forceLoadTimeout = null;
+            delete this.forceLoadTimeout;
+        }
 	}
 	
     stop() {
-		this.guildsScroller.removeEventListener("DOMNodeInserted", this.count);
+		//this.guildsScroller.removeEventListener("DOMNodeInserted", this.count);
 		document.getElementById("gc-counter").remove();
 	}
 	
